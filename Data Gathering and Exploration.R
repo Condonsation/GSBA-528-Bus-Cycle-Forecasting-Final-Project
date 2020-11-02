@@ -13,20 +13,20 @@ Long_Term_Government_Bond_Yields <- Long_Term_Government_Bond_Yields[1:102,]
 Master_df <- cbind(Quarterly_domestic_average_fare, US_Quarterly_GDP_, Long_Term_Government_Bond_Yields)[ , -c(5, 7)]    
 Master_df <- rename(Master_df, "Long_Term_Gov_Bond_Yields" = "Long-Term_Gov_Bond_Yields") ##Rename Bond Yields column header to avoid confusion
 Master_df <- rename(Master_df, "US_Average_Fare" = "US_Average(Current)") ##Rename avg. fare column header to avoid confusion
-
+Master_df$YearQrt <- paste(Master_df$Year, Master_df$Quarter, sep = 'Q')
 
 summary(Master_df) ##summary stats
 
 write.csv(Master_df, "Master_df.csv")
 
 ##Visualization
-ggplot(Master_df, aes(Year, GDP)) +
-  geom_line(size=.75, color = "blue") 
+ggplot(Master_df, aes(YearQrt, GDP)) +
+  geom_point(size=1, color = "blue") + geom_smooth()
 
-ggplot(Master_df, aes(Year, US_Average_Fare)) +
-  geom_line(size=.75, color = "Red") 
+ggplot(Master_df, aes(YearQrt, US_Average_Fare)) +
+  geom_point(size=1, color = "Red") + geom_smooth()
 
-ggplot(Master_df, aes(Year, Long_Term_Gov_Bond_Yields)) +
-  geom_point() + geom_line(size=.75) 
+ggplot(Master_df, aes(YearQrt, Long_Term_Gov_Bond_Yields)) +
+  geom_point() + geom_line(size=.75) + geom_smooth()
 
 cor(Master_df) ##correlation table: all three vars have strong corr
