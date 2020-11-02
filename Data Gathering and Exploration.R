@@ -17,12 +17,16 @@ Master_df <- rename(Master_df, "US_Average_Fare" = "US_Average(Current)") ##Rena
 
 summary(Master_df) ##summary stats
 
+write.csv(Master_df, "Master_df.csv")
+
 ##Visualization
 ggplot(Master_df, aes(Year, GDP)) +
-  geom_point() + geom_line(size=.75, color = "blue") 
-  
+  geom_line(size=.75, color = "blue") 
+
 ggplot(Master_df, aes(Year, US_Average_Fare)) +
-  geom_point()
+  geom_line(size=.75, color = "Red") 
 
 ggplot(Master_df, aes(Year, Long_Term_Gov_Bond_Yields)) +
-  geom_point()
+  geom_point() + geom_line(size=.75) 
+
+cor(Master_df) ##correlation table: all three vars have strong corr
