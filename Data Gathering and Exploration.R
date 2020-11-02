@@ -29,4 +29,4 @@ ggplot(Master_df, aes(YearQrt, US_Average_Fare)) +
 ggplot(Master_df, aes(YearQrt, Long_Term_Gov_Bond_Yields)) +
   geom_point() + geom_line(size=.75) + geom_smooth()
 
-cor(Master_df) ##correlation table: all three vars have strong corr
+cor(Master_df[,3:6]) ##correlation table: all three vars have strong corr
