@@ -41,7 +41,7 @@ varsoc us_average_fare
 dfuller us_average_fare, trend lags(1) reg
 dfuller us_average_fare, trend lags(2) reg
 dfuller us_average_fare, trend lags(3) reg //nonstationary
-
+dfuller us_average_fare, trend lags(7) reg 
 
 corrgram us_average_fare, lags(20) //there is SC and AC
 ac us_average_fare, title(Autocorrelation of Average Domestic Airline Fare)
@@ -102,9 +102,9 @@ tssmooth ma s2=us_average_fare, weights(1 2 <3> 2 1) replace //nonuniform weight
 *Not working
 tssmooth exponential s3=us_average_fare, forecast(4) replace //Exponential smoothing
 tssmooth exponential s5=us_average_fare, forecast(4) replace //Exponential smoothing
-tssmooth shwinters s4=us_average_fare, forecast(4) replace //Holt-Winters
+tssmooth shwinters s4=us_average_fare, forecast(8) replace //Holt-Winters
 
-tsline us_average_fare s1 s2 s4, lcolor(maroon)lpatter(solid shortdash)title(Actual vs Various Smoothing Techniques)
+tsline us_average_fare f_y s4, lcolor(maroon)lpatter(solid shortdash)title(Actual vs Various Smoothing Techniques)
 
 corrgram long_term_gov_bond_yields, lags(20)
 varsoc long_term_gov_bond_yields
@@ -118,3 +118,22 @@ dfuller d.long_term_gov_bond_yields, trend lags(0) reg
 
 **Possible syntax for multivariate time series model
 arima y x1 x2, arima(p,d,q)
+
+*VAR modeling
+gen changegdp=(gdp-l.gdp)/l.gdp
+hist changegdp, freq kdensity
+hist long_term_gov_bond_yields, freq kdensity
+hist ln_gdp, freq kdensity
+varsoc us_average_fare  changegdp, maxlag(7)
+vecrank us_average_fare  changegdp, trend(constant) lags(5) max
+var us_average_fare  changegdp, lags(1/5)
+
+var us_average_fare  changegdp, lags(1/5)
+predict var1
+
+var us_average_fare  changegdp, lags(1)
+predict var2
+
+tsline us_average_fare var1, lcolor(maroon)lpatter(solid shortdash)title(Actual vs VAR)
+
+tsline us_average_fare var2, lcolor(maroon)lpatter(solid shortdash)title(Actual vs VAR)
