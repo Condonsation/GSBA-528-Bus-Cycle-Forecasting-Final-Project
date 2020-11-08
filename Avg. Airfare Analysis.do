@@ -16,6 +16,7 @@ gen ln_gdp=ln(gdp)
 hist ln_gdp, freq kdensity normopts(lcolor(blue))
 
 hist us_average_fare, freq kdensity
+sktest us_average_fare //cannot reject null
 
 hist long_term_gov_bond_yields, freq kdensity
 
@@ -99,12 +100,23 @@ tsset qdate
 tssmooth ma s1=us_average_fare, window(2 1 2) replace //uniform weights
 tssmooth ma s2=us_average_fare, weights(1 2 <3> 2 1) replace //nonuniform weights
 
-*Not working
+
 tssmooth exponential s3=us_average_fare, forecast(4) replace //Exponential smoothing
-tssmooth exponential s5=us_average_fare, forecast(4) replace //Exponential smoothing
+
 tssmooth shwinters s4=us_average_fare, forecast(8) replace //Holt-Winters
 
-tsline us_average_fare f_y s4, lcolor(maroon)lpatter(solid shortdash)title(Actual vs Various Smoothing Techniques)
+tsline us_average_fare f_y s2, lcolor(maroon)lpatter(solid shortdash)lcolor(blue)title(Actual vs Various Smoothing Techniques)
+
+forvalues i=1/4 {
+
+gen noise`i' = s`i' - us_average_fare
+gen noisesq`i' = (noise`i')^2
+egen sum_noise`i' = sum(noisesq`i')
+gen mse`i' = sum_noise`i'/_N
+
+}
+
+sum mse*
 
 corrgram long_term_gov_bond_yields, lags(20)
 varsoc long_term_gov_bond_yields
@@ -124,8 +136,9 @@ gen changegdp=(gdp-l.gdp)/l.gdp
 hist changegdp, freq kdensity
 hist long_term_gov_bond_yields, freq kdensity
 hist ln_gdp, freq kdensity
+
 varsoc us_average_fare  changegdp, maxlag(7)
-vecrank us_average_fare  changegdp, trend(constant) lags(5) max
+vecrank us_average_fare  changegdp, trend(constant) lags(5) max //Johansen cointegration test.  if there is a correlation between several time series in the long term. null hypothesis cannot be rejected. There is no cointegration
 var us_average_fare  changegdp, lags(1/5)
 
 var us_average_fare  changegdp, lags(1/5)
