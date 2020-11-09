@@ -144,6 +144,12 @@ var us_average_fare  changegdp, lags(1/5)
 var us_average_fare  changegdp, lags(1/5)
 predict var1
 
+var us_average_fare  changegdp, lags(1/5)
+predict rvar, resid
+tsline rvar, yline(0) title(TS plot of residual) //white noise pattern (good; random pattern)
+corrgram rvar, lags(10)
+wntestq rvar
+
 var us_average_fare  changegdp, lags(1)
 predict var2
 
