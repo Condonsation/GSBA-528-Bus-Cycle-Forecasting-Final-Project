@@ -26,7 +26,23 @@ ggplot(Master_df, aes(YearQrt, GDP)) +
 ggplot(Master_df, aes(YearQrt, US_Average_Fare)) +
   geom_point(size=1, color = "Red") + geom_smooth()
 
-ggplot(Master_df, aes(YearQrt, Long_Term_Gov_Bond_Yields)) +
+ggplot(Master_df, aes(GDP, US_Average_Fare)) +
   geom_point() + geom_line(size=.75) + geom_smooth()
 
 cor(Master_df[,3:6]) ##correlation table: all three vars have strong corr
+
+library(tidyr)
+library(dplyr)
+##Plot multiple time series data: Airfare vs. GDP by year
+multtsdf <- Master_df %>%
+  select(Year, GDP, US_Average_Fare) %>%
+  gather(key = "variable", value = "value", -Year)
+head(multtsdf, 3)
+
+# Multiple line plot
+ggplot(multtsdf, aes(x = Year, y = value)) + 
+  geom_line(aes(color = variable), size = 2) +
+  scale_color_manual(values = c("#00AFBB", "#E7B800")) +
+  theme_minimal()
+
+  

@@ -17,6 +17,7 @@ hist ln_gdp, freq kdensity normopts(lcolor(blue))
 
 hist us_average_fare, freq kdensity
 sktest us_average_fare //cannot reject null
+sktest changegdp
 
 hist long_term_gov_bond_yields, freq kdensity
 
@@ -117,16 +118,6 @@ gen mse`i' = sum_noise`i'/_N
 }
 
 sum mse*
-
-corrgram long_term_gov_bond_yields, lags(20)
-varsoc long_term_gov_bond_yields
-dfuller long_term_gov_bond_yields, trend lags(2) reg
-dfuller long_term_gov_bond_yields, trend lags(3) reg
-dfuller long_term_gov_bond_yields, trend lags(4) reg
-dfuller long_term_gov_bond_yields, trend lags(5) reg //stationary
-
-varsoc d.long_term_gov_bond_yields
-dfuller d.long_term_gov_bond_yields, trend lags(0) reg
 
 **Possible syntax for multivariate time series model
 arima y x1 x2, arima(p,d,q)
